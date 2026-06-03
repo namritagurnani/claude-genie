@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Claude Genie" },
+      { name: "description", content: "Genie Insights simulates an AI expert marketplace that appears as a side panel within an AI chat interface." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Claude Genie" },
+      { property: "og:description", content: "Genie Insights simulates an AI expert marketplace that appears as a side panel within an AI chat interface." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Claude Genie" },
+      { name: "twitter:description", content: "Genie Insights simulates an AI expert marketplace that appears as a side panel within an AI chat interface." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/577f5026-584b-48df-959e-682e81f7ddb5/id-preview-f4e3b7e2--52d8593c-d55c-4afd-a3e6-060ceae6e2e3.lovable.app-1780468891292.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/577f5026-584b-48df-959e-682e81f7ddb5/id-preview-f4e3b7e2--52d8593c-d55c-4afd-a3e6-060ceae6e2e3.lovable.app-1780468891292.png" },
     ],
     links: [
       {
