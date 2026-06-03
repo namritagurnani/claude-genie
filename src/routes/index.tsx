@@ -29,38 +29,103 @@ type Expert = {
 };
 
 // ---------- Static data ----------
-const EXPERTS: Expert[] = [
+const AVAILABLE_BADGE = { text: "Available now", bg: "#EAF3DE", color: "#3B6D11" };
+const AVATAR_PALETTE: { bg: string; color: string }[] = [
+  { bg: "#E6F1FB", color: "#0C447C" },
+  { bg: "#E1F5EE", color: "#085041" },
+  { bg: "#EEEDFE", color: "#3C3489" },
+  { bg: "#FBE9E7", color: "#7A2E0E" },
+  { bg: "#FFF4D6", color: "#7A5A0B" },
+  { bg: "#F0E6FA", color: "#4A1F7A" },
+];
+
+function initialsOf(name: string): string {
+  return name
+    .split(/\s+/)
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function makeExpert(
+  id: string,
+  name: string,
+  domain: string,
+  rating: string,
+  paletteIdx: number,
+): Expert {
+  const p = AVATAR_PALETTE[paletteIdx % AVATAR_PALETTE.length];
+  return {
+    id,
+    initials: initialsOf(name),
+    avatarBg: p.bg,
+    avatarText: p.color,
+    name,
+    domain,
+    rating,
+    badge: AVAILABLE_BADGE,
+  };
+}
+
+type ExpertPool = { keys: string[]; experts: Expert[] };
+
+const EXPERT_POOLS: ExpertPool[] = [
   {
-    id: "arjun",
-    initials: "AM",
-    avatarBg: "#E6F1FB",
-    avatarText: "#0C447C",
-    name: "Arjun Mehta",
-    domain: "Startup & local compliance · Bangalore",
-    rating: "★ 4.9 · 8 yrs · 230+ clients",
-    badge: { text: "Available now", bg: "#EAF3DE", color: "#3B6D11" },
+    keys: ["license", "permit", "bbmp", "compliance", "regulation", "trade"],
+    experts: [
+      makeExpert("arjun", "Arjun Mehta", "Startup & local compliance · Bangalore", "★ 4.9 · 8 yrs · 230+ clients", 0),
+      makeExpert("priya", "Priya Nair", "BBMP permits & trade licensing · Karnataka", "★ 4.8 · 6 yrs · 180+ clients", 1),
+      makeExpert("rohan", "Rohan Das", "Local compliance & ward office procedures · South Bangalore", "★ 4.7 · 11 yrs · 400+ clients", 2),
+    ],
   },
   {
-    id: "priya",
-    initials: "PN",
-    avatarBg: "#E1F5EE",
-    avatarText: "#085041",
-    name: "Priya Nair",
-    domain: "Food business licensing · Karnataka",
-    rating: "★ 4.8 · 6 yrs · 180+ clients",
-    badge: { text: "Next: 2pm today", bg: "#FAEEDA", color: "#854F0B" },
+    keys: ["food", "fssai", "restaurant", "stall", "f&b", "catering"],
+    experts: [
+      makeExpert("meera", "Meera Iyer", "Food business licensing & FSSAI · Karnataka", "★ 4.9 · 7 yrs · 210+ clients", 1),
+      makeExpert("sanjay", "Sanjay Kulkarni", "F&B compliance & restaurant permits · Bangalore", "★ 4.8 · 10 yrs · 300+ clients", 3),
+      makeExpert("divya", "Divya Rao", "Local food entrepreneur & pop-up specialist · Bangalore", "★ 4.7 · 5 yrs · 140+ clients", 4),
+    ],
   },
   {
-    id: "rohan",
-    initials: "RD",
-    avatarBg: "#EEEDFE",
-    avatarText: "#3C3489",
-    name: "Rohan Das",
-    domain: "BBMP & local permits · South Bangalore",
-    rating: "★ 4.7 · 11 yrs · 400+ clients",
-    badge: { text: "Available now", bg: "#EAF3DE", color: "#3B6D11" },
+    keys: ["ai", "marketing", "digital", "growth", "campaign", "funnel"],
+    experts: [
+      makeExpert("karan", "Karan Mehta", "AI marketing & growth strategy", "★ 4.9 · 6 yrs · 190+ clients", 2),
+      makeExpert("sneha", "Sneha Pillai", "Digital marketing & emerging tools specialist", "★ 4.8 · 8 yrs · 240+ clients", 5),
+      makeExpert("rahul", "Rahul Nair", "Content strategy & AI-driven campaigns", "★ 4.7 · 7 yrs · 170+ clients", 0),
+    ],
+  },
+  {
+    keys: ["tax", "gst", "income", "filing", "ca", "accounting"],
+    experts: [
+      makeExpert("vikram", "Vikram Shah", "GST & startup taxation · Bangalore", "★ 4.9 · 9 yrs · 320+ clients", 3),
+      makeExpert("ananya", "Ananya Bose", "CA & business tax filing specialist", "★ 4.8 · 11 yrs · 400+ clients", 1),
+      makeExpert("ravi", "Ravi Kumar", "Finance & compliance for small businesses", "★ 4.7 · 8 yrs · 260+ clients", 4),
+    ],
+  },
+  {
+    keys: ["career", "job", "role", "interview", "resume", "switch"],
+    experts: [
+      makeExpert("pooja", "Pooja Menon", "Career coach & transition specialist", "★ 4.9 · 7 yrs · 220+ clients", 5),
+      makeExpert("aryan", "Aryan Sinha", "Tech careers & interview preparation", "★ 4.8 · 6 yrs · 180+ clients", 2),
+      makeExpert("nisha", "Nisha Reddy", "Resume & personal branding coach", "★ 4.7 · 5 yrs · 150+ clients", 0),
+    ],
   },
 ];
+
+const FALLBACK_EXPERTS: Expert[] = [
+  makeExpert("amit", "Amit Sharma", "Domain research specialist", "★ 4.8 · 7 yrs · 200+ clients", 0),
+  makeExpert("lavanya", "Lavanya Nair", "Subject matter consultant", "★ 4.7 · 6 yrs · 170+ clients", 1),
+  makeExpert("dev", "Dev Patel", "Independent research advisor", "★ 4.8 · 9 yrs · 250+ clients", 2),
+];
+
+function detectExperts(userMessages: string[]): Expert[] {
+  const blob = userMessages.join(" ").toLowerCase();
+  for (const pool of EXPERT_POOLS) {
+    if (pool.keys.some((k) => blob.includes(k))) return pool.experts;
+  }
+  return FALLBACK_EXPERTS;
+}
 
 const SCRIPTED: { text: string; annotation: string }[] = [
   {
