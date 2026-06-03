@@ -142,20 +142,6 @@ const SCRIPTED: { text: string; annotation: string }[] = [
   },
 ];
 
-const STOP_WORDS = new Set([
-  "what","how","is","the","a","i","do","does","to","of","in","for","on","and",
-  "or","be","are","you","my","me","it","this","that","an","as","at","with",
-  "can","will","would","should","please","help","tell","about","there","any",
-  "have","has","had","but","not","so","if","get","got","just","need","want",
-  "from","by","we","us","our","your","they","them",
-]);
-
-const DISSAT = [
-  "but in my case","not right","doesn't apply","my situation is",
-  "but what about","not specific enough","not helpful","that's not",
-  "thats not","however in my","but i","what about my",
-];
-
 const DOMAIN_NUDGE: { keys: string[]; text: string }[] = [
   {
     keys: ["license","permit","bbmp","compliance","regulation","ward","trade"],
@@ -179,35 +165,12 @@ const DOMAIN_NUDGE: { keys: string[]; text: string }[] = [
   },
 ];
 
-// ---------- Helpers ----------
-function tokenize(s: string): string[] {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9& ]+/g, " ")
-    .split(/\s+/)
-    .filter((w) => w && !STOP_WORDS.has(w) && w.length > 2);
-}
-
 function detectNudgeText(userMessages: string[]): string {
   const blob = userMessages.join(" ").toLowerCase();
   for (const d of DOMAIN_NUDGE) {
     if (d.keys.some((k) => blob.includes(k))) return d.text;
   }
   return "A domain specialist may give you more precise guidance for your situation.";
-}
-
-function shouldTrigger(userMessages: string[]): boolean {
-  const last = userMessages[userMessages.length - 1]?.toLowerCase() ?? "";
-  if (DISSAT.some((p) => last.includes(p))) return true;
-  const counts = new Map<string, Set<number>>();
-  userMessages.forEach((m, i) => {
-    new Set(tokenize(m)).forEach((w) => {
-      if (!counts.has(w)) counts.set(w, new Set());
-      counts.get(w)!.add(i);
-    });
-  });
-  for (const set of counts.values()) if (set.size >= 3) return true;
-  return false;
 }
 
 // ---------- Component ----------
