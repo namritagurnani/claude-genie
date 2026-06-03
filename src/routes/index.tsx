@@ -524,7 +524,7 @@ function NudgeBanner({ text, onConsult }: { text: string; onConsult: () => void 
 }
 
 // ---------- Expert Panel ----------
-function ExpertPanel({ onPick }: { onPick: (e: Expert) => void }) {
+function ExpertPanel({ experts, onPick }: { experts: Expert[]; onPick: (e: Expert) => void }) {
   const tabs = ["Law & compliance", "Local permits", "Food & F&B", "Real estate"];
   const [active, setActive] = useState(0);
   return (
