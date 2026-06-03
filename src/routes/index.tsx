@@ -295,6 +295,7 @@ function Page() {
           >
             {view === "experts" && (
               <ExpertPanel
+                experts={detectExperts(userMessages)}
                 onPick={(e) => {
                   setSelectedExpert(e);
                   setView("genie");
