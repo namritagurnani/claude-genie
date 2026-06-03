@@ -202,6 +202,7 @@ function Page() {
     setMessages(next);
     setInput("");
     setLoading(true);
+    let reply: string;
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -209,22 +210,17 @@ function Page() {
         body: JSON.stringify({ messages: next }),
       });
       const data = await res.json();
-      const reply = data.text ?? "Sorry, something went wrong.";
-      setMessages((m) => [...m, { role: "assistant", content: reply }]);
-      // Trigger nudge check on the latest set
-      const userMsgs = next.filter((m) => m.role === "user").map((m) => m.content);
-      if (!nudgeShown && shouldTrigger(userMsgs)) {
-        setNudgeShown(true);
-        setNudgeActive(true);
-      }
+      reply = data.text ?? "Sorry, something went wrong.";
     } catch {
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: "Network error — please try again." },
-      ]);
-    } finally {
-      setLoading(false);
+      reply = "Network error — please try again.";
     }
+    setMessages((m) => [...m, { role: "assistant", content: reply }]);
+    const assistantCount = messages.filter((m) => m.role === "assistant").length;
+    if (!nudgeShown && assistantCount + 1 === 3) {
+      setNudgeShown(true);
+      setNudgeActive(true);
+    }
+    setLoading(false);
   }
 
   return (
