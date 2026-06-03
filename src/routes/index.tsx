@@ -570,7 +570,7 @@ function ExpertPanel({ experts, onPick }: { experts: Expert[]; onPick: (e: Exper
       </div>
       <div className="flex-1 overflow-y-auto px-3 py-3">
         <div className="flex flex-col gap-2.5">
-          {EXPERTS.map((e) => (
+          {experts.map((e) => (
             <button
               key={e.id}
               onClick={() => onPick(e)}
